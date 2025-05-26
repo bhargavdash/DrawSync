@@ -1,14 +1,27 @@
 "use client"
 
 import axios from 'axios'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { HTTP_URL } from '../config';
 import { useRouter } from 'next/navigation';
 
 export default function Lobby() {
 
+    // check if user is signed in 
+    // fetch token from localstorage and redirect to signin if token is not there
+    
+
     const roomRef = useRef<HTMLInputElement>(null);
     const router = useRouter()
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if(!token){
+            alert("You are not signed in !!");
+            router.push('/signin')
+        }
+    }, [])
 
     const handleCreateRoom = async() => {
         const roomName = roomRef.current?.value;

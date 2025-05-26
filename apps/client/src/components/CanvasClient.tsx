@@ -1,47 +1,68 @@
 "use client"
 
 import { initDraw } from "@/draw";
-import { useSocket } from "@/hooks/useSocket";
 import { useRouter } from "next/navigation";
 // we can use p5.js library rather than building it from scratch
 
 import { useEffect, useRef, useState } from "react";
 
-export default function CanvasClient({roomId, shapes}: {roomId: number, shapes: string}) {
+export default function CanvasClient({socket, loading, id}:
+     {socket: WebSocket | undefined, loading: boolean, id: number}) {
+    
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    console.log(shapes);
     const router = useRouter();
 
     const [currShape, setCurrShape] = useState("");
+    const hasJoinedRoom = useRef(false);
 
-    const {socket, loading} = useSocket();
-
+    // join room effect, runs once socket is ready
     useEffect(() => {
-        if(socket && !loading){
+        if(socket && !loading && id && !hasJoinedRoom.current){
             socket.send(JSON.stringify({
                 type: "join_room",
-                roomId: roomId
-            }))
+                roomId: id
+            }));
+            hasJoinedRoom.current = true;
+            console.log("Joined Room: ", id)
         }
-    }, [socket, loading, roomId])
+    }, [socket, loading, id])
 
+    // canvas initialization effect, runs once canvas and socket is ready
     useEffect(() => {
 
-        if(canvasRef.current){
+        if(canvasRef.current && socket && !loading){
             const canvas = canvasRef.current;
             // match the width and height of the window to canvas so that we can use tailwind classes
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            
+            let cleanup: (() => void) | undefined;
+            // initialize drawing with cleanup function 
+            const initializeCanvas = async () => {
+                cleanup = await initDraw(canvas, socket, id);
+                console.log("Canvas initialized for room:", id);
+            };
 
-            initDraw(canvas, socket as WebSocket, currShape)
+            initializeCanvas();
+
+            // Return cleanup function to remove event listeners
+            return () => {
+                if (cleanup) {
+                    cleanup();
+                }
+            };
         }
 
-    }, [canvasRef, socket, currShape])
+    }, [canvasRef, socket, loading, id])
 
+    // Show loading state while connecting
     if(!socket || loading){
-        return <div>Connecting to server....</div>
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="text-white text-xl">Connecting to server...</div>
+            </div>
+        );
     }
-    console.log("Shape: ", currShape)
 
     return <>
     <div className='absolute left-10 top-2 flex gap-2'>

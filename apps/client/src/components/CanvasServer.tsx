@@ -1,18 +1,11 @@
-// here get the chats/shapes from the backend and pass them to the client function which connects the 
-// ws-server
+// connect to the ws server from here and pass the ws object to the next component 
+"use client"
 
-import { HTTP_URL } from "@/app/config";
+import { useSocket } from "@/hooks/useSocket";
 import CanvasClient from "./CanvasClient";
-import axios from "axios";
 
-async function getShapes(roomId: number) {
-    const response = await axios.get(`${HTTP_URL}/chats/${roomId}`);
+export default function CanvasServer({id}: {id: number}){
+    const {socket, loading} = useSocket();
 
-    return response.data.chats;
-}
-
-export default async function CanvasServer({id}: {id: number}){
-    const shapes = await getShapes(id);
-
-    return <CanvasClient roomId={id} shapes={shapes} />
+    return <CanvasClient socket={socket} loading={loading} id={id} />
 }
