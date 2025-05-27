@@ -1,19 +1,23 @@
-"use client"
+"use client";
 
-import axios from 'axios'
-import { useEffect, useRef } from 'react'
-import { HTTP_URL } from '../config';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Users, Plus, ArrowRight, Crown, UserPlus } from "lucide-react";
+import axios from "axios";
+import { HTTP_URL } from "../config";
 
-export default function Lobby() {
+export default function Dashboard() {
+  const [roomName, setRoomName] = useState("");
+  const router = useRouter();
 
-    // check if user is signed in 
-    // fetch token from localstorage and redirect to signin if token is not there
-    
-
-    const roomRef = useRef<HTMLInputElement>(null);
-    const router = useRouter()
-
+  // Mock data for available rooms
+  const availableRooms = [
+    { id: 1, name: "Design Workshop", participants: 3, maxParticipants: 5, host: "Sarah K." },
+    { id: 2, name: "Brainstorming Session", participants: 2, maxParticipants: 4, host: "Mike R." },
+    { id: 3, name: "Team Planning", participants: 4, maxParticipants: 6, host: "Alex M." },
+    { id: 4, name: "Project Ideation", participants: 1, maxParticipants: 5, host: "Emma L." },
+    { id: 5, name: "Creative Space", participants: 2, maxParticipants: 4, host: "John D." },
+  ];
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -23,8 +27,7 @@ export default function Lobby() {
         }
     }, [])
 
-    const handleCreateRoom = async() => {
-        const roomName = roomRef.current?.value;
+    const handleCreateRoom = async () => {
 
         if(!roomName){
             alert("Enter a room name");
@@ -42,32 +45,113 @@ export default function Lobby() {
 
         // join the user into the created room
         handleJoinRoom();
-    }
+    };
 
     const handleJoinRoom = async() => {
         // this is a websocket connection
         // redirect to the room/slug route
-        const roomName = roomRef.current?.value;
         router.push(`/canvas/${roomName}`)
     }
 
-    return <>
-    <div className='h-screen w-screen flex items-center justify-center'>
-        <div className='border border-dashed p-4 w-80 flex flex-col gap-6'> 
-            <div className='flex justify-center items-center'>
-                <p className='font-bold text-xl'>Create or Join a room here</p>
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-6">
+      {/* Background gradients */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(120,20,120,0.15),transparent_50%)]"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(120,20,120,0.15),transparent_50%)]"></div>
+        <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-fuchsia-900/10 blur-3xl"></div>
+        <div className="absolute -bottom-[30%] -right-[20%] w-[60%] h-[60%] rounded-full bg-fuchsia-900/10 blur-3xl"></div>
+      </div>
+
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Create/Join Room Section */}
+        <div className="bg-gray-800/40 backdrop-blur-lg p-8 rounded-xl border border-gray-700/50 shadow-xl">
+          <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-fuchsia-400 bg-clip-text text-transparent">
+            Create or Join a Room
+          </h1>
+          
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+              placeholder="Enter room name"
+              className="flex-grow px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg 
+                       focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500
+                       placeholder-gray-500 transition-all duration-200"
+            />
+            
+            <div className="flex gap-3">
+              <button
+                onClick={handleCreateRoom}
+                className="flex items-center px-6 py-3 bg-fuchsia-600 hover:bg-fuchsia-700 
+                         rounded-lg transition-all duration-200 gap-2 flex-1 sm:flex-initial
+                         justify-center shadow-lg shadow-fuchsia-800/20
+                         hover:shadow-fuchsia-700/40"
+              >
+                <Plus className="w-5 h-5" />
+                <span>Create</span>
+              </button>
+              
+              <button
+                onClick={() => handleJoinRoom()}
+                className="flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 
+                         rounded-lg transition-all duration-200 gap-2 flex-1 sm:flex-initial
+                         justify-center"
+              >
+                <ArrowRight className="w-5 h-5" />
+                <span>Join</span>
+              </button>
             </div>
-            <div className='flex flex-col gap-4'>
-                <input ref={roomRef} className="h-10 p-2"
-                type="text" placeholder="Enter room name" />
-                <div className='flex gap-2'>
-                    <div onClick={handleCreateRoom}
-                    className='hover:cursor-pointer hover:bg-gray-600 w-full bg-gray-700 p-3 flex justify-center items-center rounded-md'>Create room</div>
-                    <div onClick={handleJoinRoom}
-                    className='hover:cursor-pointer hover:bg-gray-600 w-full bg-gray-700 p-3 flex justify-center items-center rounded-md'>Join room</div>
-                </div>
-            </div>
+          </div>
         </div>
+
+        {/* Available Rooms Section */}
+        <div className="bg-gray-800/40 backdrop-blur-lg p-8 rounded-xl border border-gray-700/50 shadow-xl">
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <Users className="w-6 h-6 text-fuchsia-400" />
+            Available Rooms
+          </h2>
+          
+          <div className="grid gap-4">
+            {availableRooms.map((room) => (
+              <div
+                key={room.id}
+                className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50 
+                         hover:border-fuchsia-500/50 transition-all duration-200
+                         group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-medium group-hover:text-fuchsia-400 transition-colors">
+                      {room.name}
+                    </h3>
+                    <div className="flex items-center gap-3 text-sm text-gray-400">
+                      <div className="flex items-center gap-1">
+                        <Crown className="w-4 h-4 text-yellow-500" />
+                        <span>{room.host}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4" />
+                        <span>{room.participants}/{room.maxParticipants}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleJoinRoom()}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 
+                             rounded-lg transition-all duration-200"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span>Join</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
-    </>
+  );
 }
