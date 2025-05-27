@@ -39,7 +39,7 @@ export default function CanvasClient({socket, loading, id}:
             let cleanup: (() => void) | undefined;
             // initialize drawing with cleanup function 
             const initializeCanvas = async () => {
-                cleanup = await initDraw(canvas, socket, id);
+                cleanup = await initDraw(canvas, socket, id, currShape);
                 console.log("Canvas initialized for room:", id);
             };
 
@@ -53,7 +53,7 @@ export default function CanvasClient({socket, loading, id}:
             };
         }
 
-    }, [canvasRef, socket, loading, id])
+    }, [canvasRef, socket, loading, id, currShape])
 
     // Show loading state while connecting
     if(!socket || loading){

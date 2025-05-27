@@ -19,7 +19,8 @@ export type Shape =
 export async function initDraw(
   canvas: HTMLCanvasElement,
   socket: WebSocket,
-  roomId: number
+  roomId: number,
+  currShape: string
 ) {
   const ctx = canvas.getContext("2d");
   // return empty cleanup if no ctx
@@ -28,6 +29,7 @@ export async function initDraw(
   const existingShapes: Shape[] = await getExistingShapes(roomId);
   console.log("Prev shapes here:");
   console.log(existingShapes);
+  console.log("Current shape is: ", currShape);
 
   clearCanvas(ctx, canvas, existingShapes);
 
@@ -47,31 +49,66 @@ export async function initDraw(
     const width = e.clientX - startX;
     const height = e.clientY - startY;
 
-    const msgObject: Shape = {
-      type: "rect",
-      startX,
-      startY,
-      width,
-      height,
-    };
+    if(currShape === "rect"){
+        const msgObject: Shape = {
+        type: "rect",
+        startX,
+        startY,
+        width,
+        height,
+        };
 
-    existingShapes.push(msgObject);
-    socket.send(
-      JSON.stringify({
-        type: "chat",
-        message: JSON.stringify(msgObject),
-        roomId,
-      })
-    );
+        existingShapes.push(msgObject);
+        socket.send(
+        JSON.stringify({
+            type: "chat",
+            message: JSON.stringify(msgObject),
+            roomId,
+        })
+        );
+    }
+    else if(currShape === "circle"){
+        const msgObject: Shape = {
+            type: "circle",
+            centerX: (e.clientX + startX)/2,
+            centerY: (e.clientY + startY)/2,
+            radius: Math.sqrt((e.clientX - startX)*(e.clientX - startX) + (e.clientY - startY)*(e.clientY - startY)) / 2
+        }
+        existingShapes.push(msgObject);
+        socket.send(
+            JSON.stringify({
+                type: "chat",
+                message: JSON.stringify(msgObject),
+                roomId
+            })
+        );
+    }
   };
 
   const mouseMoveHandler = (e: MouseEvent) => {
     if (clicked) {
-      const width = e.clientX - startX;
-      const height = e.clientY - startY;
-      clearCanvas(ctx, canvas, existingShapes);
-      ctx.strokeStyle = "white";
-      ctx.strokeRect(startX, startY, width, height);
+        if(currShape === "rect"){
+            const width = e.clientX - startX;
+            const height = e.clientY - startY;
+            clearCanvas(ctx, canvas, existingShapes);
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(startX, startY, width, height);
+        }
+        else if(currShape === "circle"){
+            const centerX = (e.clientX + startX)/2;
+            const centerY = (e.clientY + startY)/2;
+            
+            // Use Euclidean distance to find radius
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const radius = Math.sqrt(dx * dx + dy * dy) / 2;
+
+            clearCanvas(ctx, canvas, existingShapes);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2*Math.PI);
+            ctx.strokeStyle = "white";
+            ctx.stroke();
+        }
     }
   };
 
@@ -108,6 +145,8 @@ export async function initDraw(
   };
 }
 
+
+// function to re-render canvas 
 function clearCanvas(
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
@@ -122,9 +161,16 @@ function clearCanvas(
       ctx.strokeStyle = "white";
       ctx.strokeRect(shape.startX, shape.startY, shape.width, shape.height);
     }
+    else if(shape.type === "circle"){
+        ctx.beginPath();
+        ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, 2*Math.PI);
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+    }
   });
 }
 
+// function to get prev shapes from backend
 async function getExistingShapes(roomId: number) {
   const response = await axios.get(`${HTTP_URL}/chats/${roomId}`);
   const chats = response.data.chats;
