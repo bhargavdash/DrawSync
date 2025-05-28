@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 // we can use p5.js library rather than building it from scratch
 
 import { useEffect, useRef, useState } from "react";
+import { Toolbar } from "./ToolBar";
 
 export default function CanvasClient({socket, loading, id}:
      {socket: WebSocket | undefined, loading: boolean, id: number}) {
@@ -65,20 +66,18 @@ export default function CanvasClient({socket, loading, id}:
     }
 
     return <>
-    <div className='absolute left-10 top-2 flex gap-2'>
-        <div onClick={() => setCurrShape("rect")}
-         className={` text-black p-2 rounded-md hover:cursor-pointer
-         ${currShape == "rect" ? "bg-gray-500": "bg-gray-700"}`}>Rectangle</div>
-        <div onClick={() => setCurrShape("circle")}
-         className={` text-black p-2 rounded-md hover:cursor-pointer
-         ${currShape == "circle" ? "bg-gray-500": "bg-gray-700"}`}>Circle</div>
-    </div>
+    {/* Render toolbar on top of the canvas  */}
+    <Toolbar currShape={currShape} setCurrShape={setCurrShape} />
+    
+    {/* Leave room button to exit the room, user goes to the lobby */}
     <div onClick={() => {
         router.push('/lobby')
     }}
-     className='p-2 absolute left-[90%] top-2 rounded-md hover:cursor-pointer bg-red-500 text-black hover:bg-red-400'>
+     className='p-2 absolute left-[90%] top-4 rounded-md hover:cursor-pointer bg-red-500 text-black hover:bg-red-400'>
         Leave Room
     </div>
+
+    {/* This is the actual canvas element */}
     <canvas ref={canvasRef} className="w-screen h-screen"></canvas>
     
     </>
