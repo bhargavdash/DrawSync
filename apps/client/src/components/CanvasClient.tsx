@@ -1,7 +1,7 @@
 "use client"
 
-import { initDraw } from "@/draw";
 import { useRouter } from "next/navigation";
+import { Game, Tool } from "@/draw/Game";
 // we can use p5.js library rather than building it from scratch
 
 import { useEffect, useRef, useState } from "react";
@@ -11,9 +11,10 @@ export default function CanvasClient({socket, loading, id}:
      {socket: WebSocket | undefined, loading: boolean, id: number}) {
     
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const gameRef = useRef<Game | null>(null);
     const router = useRouter();
 
-    const [currShape, setCurrShape] = useState("");
+    const [currTool, setCurrTool] = useState<Tool>("rect");
     const hasJoinedRoom = useRef(false);
 
     // join room effect, runs once socket is ready
@@ -37,24 +38,37 @@ export default function CanvasClient({socket, loading, id}:
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            let cleanup: (() => void) | undefined;
             // initialize drawing with cleanup function 
             const initializeCanvas = async () => {
-                cleanup = await initDraw(canvas, socket, id, currShape);
-                console.log("Canvas initialized for room:", id);
+                try{
+                    const game = new Game(canvas, socket, id);
+                    await game.initialize(currTool);
+                    gameRef.current = game;
+                    console.log("Game initialized for room ", id);
+                } catch(err){
+                    console.error("Failed to initialize game:", err);
+                }
             };
 
             initializeCanvas();
 
             // Return cleanup function to remove event listeners
             return () => {
-                if (cleanup) {
-                    cleanup();
+                if (gameRef.current) {
+                    gameRef.current.cleanup();
+                    gameRef.current = null;
                 }
             };
         }
 
-    }, [canvasRef, socket, loading, id, currShape])
+    }, [canvasRef, socket, loading, id])
+
+    // handle tool changes
+    useEffect(() => {
+        if(gameRef.current){
+            gameRef.current.setTool(currTool);
+        }
+    }, [currTool]);
 
     // Show loading state while connecting
     if(!socket || loading){
@@ -67,7 +81,7 @@ export default function CanvasClient({socket, loading, id}:
 
     return <>
     {/* Render toolbar on top of the canvas  */}
-    <Toolbar currShape={currShape} setCurrShape={setCurrShape} />
+    <Toolbar currTool={currTool} setCurrTool={setCurrTool} />
     
     {/* Leave room button to exit the room, user goes to the lobby */}
     <div onClick={() => {
