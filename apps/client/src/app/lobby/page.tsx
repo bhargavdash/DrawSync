@@ -57,8 +57,7 @@ export default function Dashboard() {
     };
 
     const handleJoinRoom = async() => {
-        // this is a websocket connection
-        // redirect to the room/slug route
+        // redirect to the canvas/slug route
         startLoading("Joining room...");
         try{
             await router.push(`/canvas/${roomName}`)
