@@ -103,7 +103,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
 
       {/* Footer */}
       <footer className="py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-xs">
-        <p>© {new Date().getFullYear()} DrawCraft. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} DrawSync. All rights reserved.</p>
       </footer>
     </div>
   );

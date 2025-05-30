@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Game, Tool } from '@/draw/Game';
-import { RefreshCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { ALargeSmall, Circle, Diamond, MousePointer, Pencil, RectangleHorizontal, RefreshCcw, ZoomIn, ZoomOut } from 'lucide-react';
 
 interface ToolbarProps {
   currShape: Tool;
@@ -24,12 +24,12 @@ const COLORS = [
 ];
 
 const TOOLS = [
-  { id: 'select' as Tool, label: 'Select', icon: '↖' },
-  { id: 'rect' as Tool, label: 'Rectangle', icon: '▭' },
-  { id: 'circle' as Tool, label: 'Circle', icon: '○' },
-  { id: 'diamond' as Tool, label: 'Diamond', icon: '◇' },
-  { id: 'text' as Tool, label: 'Text', icon: 'T' },
-  { id: 'pencil' as Tool, label: 'Pencil', icon: '✏' },
+  { id: 'select' as Tool, label: 'Select', icon: <MousePointer size={15}/> },
+  { id: 'rect' as Tool, label: 'Rectangle', icon: <RectangleHorizontal size={15} /> },
+  { id: 'circle' as Tool, label: 'Circle', icon: <Circle  size={15}/> },
+  { id: 'diamond' as Tool, label: 'Diamond', icon: <Diamond size={15} /> },
+  { id: 'text' as Tool, label: 'Text', icon: <ALargeSmall size={15}/> },
+  { id: 'pencil' as Tool, label: 'Pencil', icon: <Pencil size={15} /> },
 ];
 
 export function EnhancedToolbar({ 
