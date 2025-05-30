@@ -7,8 +7,12 @@ import { Eye, EyeOff, ArrowRight, Github, Twitter } from "lucide-react";
 import axios from "axios";
 import { HTTP_URL } from "../config";
 import { useRouter } from "next/navigation";
+import { useLoading } from "@/hooks/useLoading";
 
 export default function SignIn() {
+  // to show loading animation on screen
+  const {startLoading, stopLoading} = useLoading();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,15 +26,22 @@ export default function SignIn() {
         alert("Incomplete credentials");
         return;
     }
-    const response = await axios.post(`${HTTP_URL}/signin`, {
-        username: email,
-        password: password
-    });
+    startLoading("Signing in...");
+    try {
+        const response = await axios.post(`${HTTP_URL}/signin`, {
+            username: email,
+            password: password
+        });
 
-    console.log(response.data);
-    localStorage.setItem("token", response.data.token)
-    router.push('/lobby')
-    console.log({ email, password, rememberMe });
+        console.log(response.data);
+        localStorage.setItem("token", response.data.token);
+        await router.push('/lobby');
+        stopLoading();
+    } catch (error) {
+        stopLoading();
+        console.error("Sign in error:", error);
+        alert("Sign in failed. Please try again.");
+    }
   };
 
   return (

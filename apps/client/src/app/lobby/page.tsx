@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { Users, Plus, ArrowRight, Crown, UserPlus } from "lucide-react";
 import axios from "axios";
 import { HTTP_URL } from "../config";
+import { useLoading } from "@/hooks/useLoading";
 
 export default function Dashboard() {
+  const {startLoading, stopLoading} = useLoading();
+
   const [roomName, setRoomName] = useState("");
   const router = useRouter();
 
@@ -33,24 +36,38 @@ export default function Dashboard() {
             alert("Enter a room name");
             return;
         }
-        const response = await axios.post(`${HTTP_URL}/room`, {
-            name: roomName
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        })
+        startLoading("Creating room...");
+        try{
+            const response = await axios.post(`${HTTP_URL}/room`, {
+              name: roomName
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            })
+            console.log(response.data)
 
-        console.log(response.data)
-
-        // join the user into the created room
-        handleJoinRoom();
+          // join the user into the created room
+            handleJoinRoom();
+        } catch (error) {
+            stopLoading();
+            console.error("Error creating room:", error);
+            alert("Failed to create room. Please try again.");
+        }
     };
 
     const handleJoinRoom = async() => {
         // this is a websocket connection
         // redirect to the room/slug route
-        router.push(`/canvas/${roomName}`)
+        startLoading("Joining room...");
+        try{
+            await router.push(`/canvas/${roomName}`)
+            stopLoading();
+        } catch (error) {
+            stopLoading();
+            console.error("Error joining room:", error);
+            alert("Failed to join room. Please try again.");
+        }
     }
 
   return (
