@@ -11,6 +11,7 @@
     "@repo/db": "workspace:*",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.3",
+    "@upstash/redis": "^1.35.1",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "redis": "^5.0.1",
