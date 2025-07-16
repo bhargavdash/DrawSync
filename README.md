@@ -1,84 +1,143 @@
-# Turborepo starter
+# DrawSync 🎨
 
-This Turborepo starter is maintained by the Turborepo core team.
+A collaborative drawing application inspired by Excalidraw, built with modern web technologies for real-time sketch collaboration.
 
-## Using this example
+## ✨ Features
 
-Run the following command:
+- **Intuitive Drawing Tools**: Freehand drawing, shapes, text, and arrows
+- **Real-time Collaboration**: Multiple users can draw simultaneously
+- **Hand-drawn Style**: Sketchy, hand-drawn aesthetic for natural-looking diagrams
+- **Export Options**: Save your work in various formats
+- **Responsive Design**: Works seamlessly across devices
+- **Undo/Redo**: Full history management for drawing operations
+- **Layer Management**: Organize elements with proper layering
+- **Color Palette**: Customizable colors for different elements
 
-```sh
-npx create-turbo@latest
-```
+## 🚀 Tech Stack
 
-## What's inside?
+### Frontend
+- **Framework**: [Next.js](https://nextjs.org/) - React framework for production
+- **Language**: [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- **Styling**: CSS Modules / Tailwind CSS
+- **Canvas Rendering**: HTML5 Canvas API
 
-This Turborepo includes the following packages/apps:
+### Backend & DB
+- **Framework**: [Node JS](https://nodejs.org/en) & [ws library](https://www.npmjs.com/package/ws)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- **Database**: [Postgres](https://www.postgresql.org/)
+- **ORM**: [Prisma](https://www.prisma.io/)
 
-### Apps and Packages
+### Development Tools
+- **Monorepo**: [Turborepo](https://turbo.build/) - High-performance build system
+- **Package Manager**: [pnpm](https://pnpm.io/) - Fast, disk space efficient package manager
+- **Linting**: [ESLint](https://eslint.org/) - Code quality and consistency
+- **Formatting**: [Prettier](https://prettier.io/) - Opinionated code formatter
+- **Type Checking**: TypeScript for static type checking
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Architecture
+- **Monorepo Structure**: Shared components and configurations
+- **Component Library**: Reusable UI components (`@repo/ui`)
+- **Shared Configuration**: ESLint and TypeScript configs across packages
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
+## 📦 Project Structure
 
 ```
-cd my-turborepo
-pnpm dev
+DrawSync/
+├── apps/
+│   ├── client/                      # Main drawing application
+│   └── http-backend/                # HTTP backend
+│   └── ws-backend/                  # Web Socket backend using 
+├── packages/
+│   ├── backend-common/         # Common backend config
+│   ├── common/                 # Common types for both backend & Frontend
+│   ├── db/                     # Prisma Config
+│   ├── ui/                     # Shared UI components
+│   ├── eslint-config/          # ESLint configuration
+│   └── typescript-config/      # TypeScript configuration
+├── package.json
+├── turbo.json
+└── README.md
 ```
 
-### Remote Caching
+## 🛠️ Installation
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### Prerequisites
+- Node.js 16+ 
+- pnpm (recommended) or npm
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+### Setup
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/bhargavdash/DrawSync.git
+   cd DrawSync
+   ```
 
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Start development server**
+   ```bash
+   pnpm dev
+   ```
+
+4. **Open your browser**
+   Navigate to `http://localhost:3000` to start drawing!
+
+## 🏗️ Available Scripts
+
+- `pnpm dev` - Start development servers for all apps
+- `pnpm build` - Build all apps and packages
+- `pnpm lint` - Run ESLint across all packages
+- `pnpm format` - Format code with Prettier
+- `pnpm type-check` - Run TypeScript type checking
+
+## 🎯 Usage
+
+1. **Basic Drawing**: Select a tool from the toolbar and start drawing on the canvas
+2. **Shapes**: Choose from rectangle, circle, arrow, and line tools
+3. **Text**: Add text elements by selecting the text tool and clicking on the canvas
+4. **Colors**: Change stroke and fill colors using the color palette
+5. **Export**: Save your drawings as PNG, SVG, or JSON files
+6. **Collaboration**: Share the session link with others for real-time collaboration
+
+## 🔧 Configuration
+
+### Environment Variables
+Create a `.env.local` file in the root directory:
+
+```env
+# Add your environment variables here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
-cd my-turborepo
-npx turbo login
-```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Turborepo Configuration
+The project uses Turborepo for efficient builds and caching. Configuration is managed in `turbo.json`.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
 
-```
-npx turbo link
-```
 
-## Useful Links
+## 🙏 Acknowledgments
 
-Learn more about the power of Turborepo:
+- [Excalidraw](https://excalidraw.com/) - Inspiration for the drawing interface
+- [Next.js](https://nextjs.org/) - React framework
+- [Turborepo](https://turbo.build/) - Monorepo toolchain
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## 📞 Support
+
+If you encounter any issues or have questions:
+- Open an issue on [GitHub Issues](https://github.com/bhargavdash/DrawSync/issues)
+
+## 🗺️ Roadmap
+
+- [ ] Real-time collaboration with WebSockets
+- [ ] Advanced shape tools
+- [ ] Layer management system
+- [ ] Plugin architecture
+- [ ] Mobile app support
+- [ ] Cloud storage integration
+
+---
+
+**Built by [Bhargav Dash](https://github.com/bhargavdash)**
