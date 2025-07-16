@@ -17,9 +17,9 @@ async function getRoomId(slug: string) {
     return response.data.id;
 }
 
-export default async function ChatRoom({params}: {params: {slug: string}}) {
+export default async function ChatRoom({params}: {params: Promise<{slug: string}>}) {
 
-    const slug = (await params).slug;
+    const {slug} = await params;
     const roomId = await getRoomId(slug)
     if(!roomId){
         return;

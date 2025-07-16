@@ -1,7 +1,6 @@
 // this is the starting point of the canvas logic, here the roomId is extracted from the slug
 // and CanvasServer is called which establishes connection with the ws-backend
 
-
 import { HTTP_URL } from "@/app/config";
 import CanvasServer from "@/components/CanvasServer";
 import axios from "axios";
@@ -13,13 +12,13 @@ async function getRoomId(slug: string){
     return response.data.id;
 }
 
-export default async function Canvas({params} : {params: {slug: string}}) {
-    const slug = (await params).slug;
-
+export default async function Canvas({params} : {params: Promise<{slug: string}>}) {
+    // Await the params Promise to get the actual params object
+    const {slug} = await params;
     try{
         const roomId = await getRoomId(slug);
         if(!roomId){
-            return;
+            return null;
         }
     
         return <CanvasServer id={roomId} />
@@ -37,5 +36,4 @@ export default async function Canvas({params} : {params: {slug: string}}) {
             </div>
         )
     }
-    
 }
