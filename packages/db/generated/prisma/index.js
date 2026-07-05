@@ -147,7 +147,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\DELL\\Desktop\\Cohort3-assignments\\excalidraw-project\\packages\\db\\generated\\prisma",
+      "value": "/Users/bhargav/Projects/drawsync/packages/db/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -156,12 +156,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\DELL\\Desktop\\Cohort3-assignments\\excalidraw-project\\packages\\db\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/bhargav/Projects/drawsync/packages/db/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -175,6 +175,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -183,8 +184,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id       String  @id @default(uuid())\n  email    String  @unique\n  password String\n  name     String\n  photo    String?\n  rooms    Room[]\n  chats    Chat[]\n}\n\nmodel Room {\n  id        Int      @id @default(autoincrement())\n  slug      String\n  createdAt DateTime @default(now())\n  adminId   String\n  admin     User     @relation(fields: [adminId], references: [id])\n  chats     Chat[]\n}\n\nmodel Chat {\n  id      Int    @id @default(autoincrement())\n  message String\n  roomId  Int\n  userId  String\n  room    Room   @relation(fields: [roomId], references: [id])\n  user    User   @relation(fields: [userId], references: [id])\n}\n",
-  "inlineSchemaHash": "f31f625c915b1fa73408d121c29d1900893c9ef430ffc70d287810710fbaa4af",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id       String  @id @default(uuid())\n  email    String  @unique\n  password String\n  name     String\n  photo    String?\n  rooms    Room[]\n  chats    Chat[]\n}\n\nmodel Room {\n  id        Int      @id @default(autoincrement())\n  slug      String\n  createdAt DateTime @default(now())\n  adminId   String\n  admin     User     @relation(fields: [adminId], references: [id])\n  chats     Chat[]\n}\n\nmodel Chat {\n  id      Int    @id @default(autoincrement())\n  message String\n  roomId  Int\n  userId  String\n  room    Room   @relation(fields: [roomId], references: [id])\n  user    User   @relation(fields: [userId], references: [id])\n}\n",
+  "inlineSchemaHash": "12b7aba6bee573455272e07a6288446ab5bd1052d96c4ebe9b1b3d4cc5e95d38",
   "copyEngine": true
 }
 
@@ -223,8 +224,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "generated/prisma/query_engine-windows.dll.node")
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
+path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma/schema.prisma")

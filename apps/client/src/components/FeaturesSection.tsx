@@ -1,64 +1,65 @@
-import { Lightbulb, Users, Zap, Palette, Lock, Clock } from 'lucide-react';
-
-const features = [
+const SPECS = [
   {
-    title: 'Real-time Collaboration',
-    description: 'Work together with your team in real-time. See changes as they happen.',
-    icon: Users,
+    n: '01',
+    title: 'Multi-server fanout',
+    detail:
+      "Room membership and every stroke are published through Redis pub/sub, so state stays consistent across multiple WebSocket server instances — not just one process handling every connection.",
   },
   {
-    title: 'Intuitive Drawing Tools',
-    description: 'Simple yet powerful drawing tools that anyone can master in minutes.',
-    icon: Palette,
+    n: '02',
+    title: 'Persistence off the hot path',
+    detail:
+      'Each stroke is queued and drained to Postgres asynchronously. A slow database write never blocks the broadcast to everyone else already in the room.',
   },
   {
-    title: 'Lightning Fast',
-    description: 'Optimized performance ensures smooth drawing experience on any device.',
-    icon: Zap,
+    n: '03',
+    title: 'Hand-rolled canvas engine',
+    detail:
+      'No fabric.js, no Konva. Shape hit-testing, undo/redo history, zoom-to-cursor, and PNG/JSON export are built directly on the 2D canvas context.',
   },
   {
-    title: 'Idea Visualization',
-    description: 'Turn abstract concepts into clear visual representations quickly.',
-    icon: Lightbulb,
-  },
-  {
-    title: 'Secure Sharing',
-    description: 'Control who can view and edit your drawings with granular permissions.',
-    icon: Lock,
-  },
-  {
-    title: 'Version History',
-    description: 'Track changes and revert to previous versions of your work anytime.',
-    icon: Clock,
+    n: '04',
+    title: 'Gated at the handshake',
+    detail: 'Every WebSocket connection carries a JWT, verified before a room join is ever accepted.',
   },
 ];
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-24 bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            Powerful Features for Seamless Collaboration
-          </h2>
-          <p className="mt-4 text-xl text-gray-400 max-w-3xl mx-auto">
-            Everything you need to bring your ideas to life and collaborate effectively with your team.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1"
+    <section id="features" className="py-28 border-t border-(--color-line-soft)">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1.2fr] gap-12 md:gap-20">
+          <div>
+            <h2
+              className="font-semibold tracking-tight text-(--color-ink) text-balance"
+              style={{ fontSize: 'clamp(2rem, 1.6rem + 1.6vw, 3rem)', lineHeight: 1.1 }}
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg p-2.5 mb-5 flex items-center justify-center">
-                <feature.icon className="w-6 h-6 text-white" />
+              Built like an instrument, not a demo
+            </h2>
+            <p className="mt-5 text-(--color-ink-muted) leading-relaxed max-w-sm">
+              The parts underneath the canvas — the pieces that make
+              &ldquo;multiple people, one live sheet&rdquo; actually hold up.
+            </p>
+          </div>
+
+          <dl className="border-t border-(--color-line-soft)">
+            {SPECS.map((spec) => (
+              <div
+                key={spec.n}
+                className="grid grid-cols-[3rem_1fr] gap-6 py-7 border-b border-(--color-line-soft)"
+              >
+                <dt className="font-(family-name:--font-mono-readout) text-sm text-(--color-accent) pt-0.5">
+                  {spec.n}
+                </dt>
+                <dd>
+                  <p className="font-medium text-(--color-ink)">{spec.title}</p>
+                  <p className="mt-1.5 text-sm text-(--color-ink-muted) leading-relaxed max-w-xl">
+                    {spec.detail}
+                  </p>
+                </dd>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
-            </div>
-          ))}
+            ))}
+          </dl>
         </div>
       </div>
     </section>

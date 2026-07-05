@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "tsc -b && node dist/index.js",
+    "start": "tsc -b && node --env-file=.env dist/index.js",
     "dev": "pnpm run build && pnpm run start"
   },
   "dependencies": {

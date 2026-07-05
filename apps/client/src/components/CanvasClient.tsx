@@ -4,6 +4,8 @@ import { Game, Tool } from "@/draw/Game"; // Updated import
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { EnhancedToolbar } from "./ToolBar";// Updated import
+import { LoadingSpinner } from "./loading-spinner";
+import { LogOut } from "lucide-react";
 
 export default function CanvasClient({socket, loading, id}: {
     socket: WebSocket | undefined, 
@@ -90,52 +92,53 @@ export default function CanvasClient({socket, loading, id}: {
     // Show loading state while connecting
     if(!socket || loading){
         return (
-            <div className="flex items-center justify-center h-screen bg-gray-900">
-                <div className="text-white text-xl">Connecting to server...</div>
+            <div className="flex flex-col items-center justify-center gap-4 h-screen bg-(--color-bg)">
+                <LoadingSpinner size="lg" />
+                <p className="text-(--color-ink) text-sm font-medium">Connecting to server...</p>
             </div>
         );
     }
 
     return (
-        <div className="relative w-screen h-screen bg-gray-900 overflow-hidden">
+        <div className="relative w-screen h-screen bg-(--color-bg) blueprint-grid overflow-hidden">
             {/* Enhanced Toolbar */}
-            <EnhancedToolbar 
-                currShape={currShape} 
+            <EnhancedToolbar
+                currShape={currShape}
                 setCurrShape={setCurrShape}
                 currColor={currColor}
                 setCurrColor={setCurrColor}
                 gameRef={gameRef}
             />
-            
-            {/* Leave room button */}
-            <div 
-                onClick={() => router.push('/lobby')}
-                className='p-2 absolute right-4 top-4 rounded-md hover:cursor-pointer bg-red-500 text-white hover:bg-red-400 transition-colors z-10'
-            >
-                Leave Room
-            </div>
 
-            {/* Room info */}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm z-10">
-                Room ID: {id}
+            {/* Leave room button */}
+            <button
+                onClick={() => router.push('/lobby')}
+                className="flex items-center gap-1.5 p-2 absolute right-4 top-4 rounded-md bg-(--color-surface-recessed) border border-(--color-line) text-(--color-ink) text-sm hover:bg-(--color-surface) transition-colors z-10"
+            >
+                <LogOut size={14} />
+                Leave room
+            </button>
+
+            {/* Room info — hidden below sm, where the toolbar already occupies this space */}
+            <div className="hidden sm:block absolute top-4 left-1/2 -translate-x-1/2 bg-(--color-surface-recessed) border border-(--color-line) text-(--color-ink) px-3 py-1.5 rounded-md font-(family-name:--font-mono-readout) text-xs z-10">
+                room · {id}
             </div>
 
             {/* Canvas element */}
-            <canvas 
-                ref={canvasRef} 
+            <canvas
+                ref={canvasRef}
                 className="w-screen h-screen cursor-crosshair"
-                style={{ 
+                style={{
                     cursor: currShape === 'select' ? 'default' : 'crosshair'
                 }}
             />
 
             {/* Instructions overlay for first-time users */}
-            <div className="absolute bottom-4 right-4 bg-gray-800 text-white p-3 rounded-lg text-xs max-w-xs opacity-75 z-10">
-                <div className="font-semibold mb-1">Quick Tips:</div>
-                <div>• Use tools from toolbar to draw</div>
-                <div>• Select tool to click and modify shapes</div>
-                <div>• Scroll to zoom, Ctrl+click to pan</div>
-                <div>• Use keyboard shortcuts for faster workflow</div>
+            <div className="absolute bottom-4 right-4 bg-(--color-surface-recessed) border border-(--color-line) text-(--color-ink-muted) p-3 rounded-lg text-xs max-w-xs z-10">
+                <div className="font-medium text-(--color-ink) mb-1">Quick tips</div>
+                <div>Pick a tool from the toolbar to draw</div>
+                <div>Select tool to click and modify shapes</div>
+                <div>Scroll to zoom, Ctrl+click to pan</div>
             </div>
         </div>
     );

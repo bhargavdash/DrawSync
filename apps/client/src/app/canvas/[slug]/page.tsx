@@ -25,14 +25,14 @@ export default async function Canvas({params} : {params: Promise<{slug: string}>
     } catch (error) {
         console.error("Error fetching room ID:", error);
         return (
-            <div className="flex items-center justify-center gap-2 h-screen bg-gray-900">
-                <div className="text-white text-xl">This room does not exist, please create this room first...</div>
-                <Link href="/lobby" 
-                className="flex items-center px-6 py-3 bg-fuchsia-600 hover:bg-fuchsia-700 
-                         rounded-lg transition-all duration-200 gap-2 flex-1 sm:flex-initial
-                         justify-center shadow-lg shadow-fuchsia-800/20
-                         hover:shadow-fuchsia-700/40">
-                    Create Room</Link>
+            <div className="flex flex-col items-center justify-center gap-4 h-screen bg-(--color-bg) text-center px-6">
+                <p className="text-(--color-ink) text-lg">This room doesn&apos;t exist yet.</p>
+                <Link
+                    href="/lobby"
+                    className="px-6 py-2.5 rounded-md bg-(--color-accent) text-(--color-bg) text-sm font-medium hover:brightness-110 transition-[filter]"
+                >
+                    Create it
+                </Link>
             </div>
         )
     }
